@@ -1,7 +1,6 @@
 from ultralytics import YOLO
 from flask import Flask, render_template, url_for, request, redirect, send_from_directory
 import os
-import moviepy.editor as moviepy
 import shutil
 
 app = Flask(__name__)
@@ -47,10 +46,6 @@ def predict_video(file):
     final_output_path = os.path.join(app.config['UPLOAD_FOLDER'], 'result.avi')
     os.rename(predicted_video_path, final_output_path)
 
-    #Convert to mp4
-    clip = moviepy.VideoFileClip("../main/uploads/result.avi")
-    clip.write_videofile("result.mp4")
-
     return 'result.avi'
 
 
@@ -94,6 +89,11 @@ def display_file(filename):
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+@app.route('/download-video')
+def download_video():
+    # Make sure 'result.mp4' is placed in the 'static' directory
+    return send_from_directory('uploads', 'result.avi', as_attachment=True)
 
 
 if __name__ == '__main__':

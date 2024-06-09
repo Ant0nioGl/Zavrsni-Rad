@@ -10,9 +10,7 @@
         {% if file_url.endswith(('.png', '.jpg', '.jpeg')) %}
             <img src="{{ file_url }}" alt="Image">
         {% elif file_url.endswith(('.mp4', '.webm', '.avi', '.mov')) %}
-            <video controls autoplay muted>
-                <source src="../result.mp4" >
-            </video>
+            <a href="/download-video" download="result.avi">Download Video</a>
         {% else %}
             <p>Unsupported file type.</p>
         {% endif %}
