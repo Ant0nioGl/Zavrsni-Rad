@@ -8,9 +8,7 @@ def track(model, source):
     model.predict(source=source,
                   conf=0.5,
                   save=True,
-                  classes=[2, 3, 5, 7],
-                  project=".",
-                  name="object_tracking")
+                  classes=[2, 3, 5, 7])
 
 
 def measure_speed(model, source):

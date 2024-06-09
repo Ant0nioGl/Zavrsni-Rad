@@ -42,16 +42,11 @@ def predict_video(file):
     # Delete the temporary file after prediction
     os.remove(temp_video_path)
 
-    # Find the predicted video file in the expected directory
+    # Move the predicted video to the UPLOAD_FOLDER
     predicted_video_path = os.path.join('runs', 'detect', 'predict', 'temp.avi')
-
-    if os.path.exists(predicted_video_path):
-        # Move the predicted video to the UPLOAD_FOLDER
-        final_output_path = os.path.join(app.config['UPLOAD_FOLDER'], 'result.avi')
-        os.rename(predicted_video_path, final_output_path)
-        return 'result.avi'
-    else:
-        raise FileNotFoundError("No predicted video found in the expected directory.")
+    final_output_path = os.path.join(app.config['UPLOAD_FOLDER'], 'result.avi')
+    os.rename(predicted_video_path, final_output_path)
+    return 'result.avi'
 
 
 if not os.path.exists(app.config['UPLOAD_FOLDER']):

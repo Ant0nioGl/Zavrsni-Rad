@@ -11,7 +11,7 @@
             <img src="{{ file_url }}" alt="Image">
         {% elif file_url.endswith(('.mp4', '.webm', '.avi', '.mov')) %}
             <video controls>
-                <source src="{{ file_url }}" type="video/mp4">
+                <source src="../main/uploads/result.avi" type="video/avi">
             </video>
         {% else %}
             <p>Unsupported file type.</p>
