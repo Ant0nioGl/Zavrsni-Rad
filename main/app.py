@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 from flask import Flask, render_template, url_for, request, redirect, send_from_directory
 import os
-import glob
+import moviepy.editor as moviepy
 import shutil
 
 app = Flask(__name__)
@@ -46,6 +46,11 @@ def predict_video(file):
     predicted_video_path = os.path.join('runs', 'detect', 'predict', 'temp.avi')
     final_output_path = os.path.join(app.config['UPLOAD_FOLDER'], 'result.avi')
     os.rename(predicted_video_path, final_output_path)
+
+    #Convert to mp4
+    clip = moviepy.VideoFileClip("../main/uploads/result.avi")
+    clip.write_videofile("result.mp4")
+
     return 'result.avi'
 
 
