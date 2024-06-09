@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <button class="back-button" onclick="window.location.href='{{ url_for('index') }}'">Povratak</button>
+        {% if file_url.endswith(('.png', '.jpg', '.jpeg')) %}
+            <img src="{{ file_url }}" alt="Image">
+        {% elif file_url.endswith(('.mp4', '.webm', '.avi', '.mov')) %}
+            <video controls>
+                <source src="{{ file_url }}" type="video/mp4">
+            </video>
+        {% else %}
+            <p>Unsupported file type.</p>
+        {% endif %}
+    </div>
+{% endblock %}
+

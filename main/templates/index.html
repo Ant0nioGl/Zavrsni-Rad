@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h2>Sustav za detekciju vozila</h2>
+        <form action="/upload" method="post" class="form" enctype="multipart/form-data">
+            <input type="file" id="fileInput" name="file" accept=".mp4, .mov, .avi, .webm, .jpg, .png, .jpeg" required>
+            <input type="submit" id="submitButton" style="display: none" value="Evaluiraj">
+        </form>
+    </div>
+{% endblock %}
+
