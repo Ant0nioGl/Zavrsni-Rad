@@ -98,3 +98,9 @@ button > a {
         padding-top: 1rem;
         padding-bottom: 2rem;
 }
+
+.back-button {
+        position: absolute;
+        left: 10px;
+        top: -1px;
+}

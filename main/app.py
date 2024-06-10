@@ -1,4 +1,6 @@
+import cv2
 from ultralytics import YOLO
+from ultralytics.solutions import object_counter
 from flask import Flask, render_template, url_for, request, redirect, send_from_directory
 import os
 import shutil
@@ -48,6 +50,46 @@ def predict_video(file):
 
     return 'result.avi'
 
+def count_vehicles(file):
+    model = YOLO('yolov8n.pt')
+    cap = cv2.VideoCapture(file)
+    assert cap.isOpened(), "Error reading video file"
+    w, h, fps = (int(cap.get(x)) for x in (cv2.CAP_PROP_FRAME_WIDTH, cv2.CAP_PROP_FRAME_HEIGHT, cv2.CAP_PROP_FPS))
+
+    # Define line points
+    line_points = [(0, h/2 + h/8), (w, h/2 + h/8)]
+
+    # Video writer
+    video_writer = cv2.VideoWriter("result.avi",
+                                   cv2.VideoWriter_fourcc(*'mp4v'),
+                                   fps,
+                                   (w, h))
+
+    # Init Object Counter
+    counter = object_counter.ObjectCounter()
+    counter.set_args(view_img=True,
+                     reg_pts=line_points,
+                     classes_names=model.names,
+                     draw_tracks=True,
+                     line_thickness=2)
+
+    while cap.isOpened():
+        success, im0 = cap.read()
+        if not success:
+            print("Video frame is empty or video processing has been successfully completed.")
+            break
+        tracks = model.track(im0, persist=True, show=False, classes=[2, 3, 5, 7])
+
+        im0 = counter.start_counting(im0, tracks)
+        video_writer.write(im0)
+
+    cap.release()
+    video_writer.release()
+    cv2.destroyAllWindows()
+
+    output_path = os.path.join(app.config['UPLOAD_FOLDER'], 'result.avi')
+    os.rename("result.avi", output_path)
+    return 'result.avi'
 
 @app.route("/")
 def index():
@@ -80,6 +122,26 @@ def upload_file():
     else:
         return "Please try again."
 
+@app.route('/upload-count', methods=['POST'])
+def upload_file_count():
+    if 'file' not in request.files:
+        return 'Missing file.'
+    file = request.files['file']
+    if file.filename == '':
+        return 'Please select a file.'
+    elif file and check_if_allowed(file.filename):
+        file_content = file.read()
+        extension = file.filename.rsplit('.', 1)[1].lower()
+        if extension in {'mp4', 'mov', 'avi', 'webm'}:
+            temp_video_path = os.path.join(app.config['UPLOAD_FOLDER'], 'temp.mp4')
+            with open(temp_video_path, 'wb') as temp_file:
+                temp_file.write(file_content)
+            prediction = count_vehicles(temp_video_path)
+        else:
+            return "Unsupported file type."
+        return redirect(url_for('display_file', filename=prediction))
+    else:
+        return "Please try again."
 
 @app.route('/display_file/<filename>')
 def display_file(filename):
