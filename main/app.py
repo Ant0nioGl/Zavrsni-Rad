@@ -49,13 +49,14 @@ def predict_video(file):
     return 'result.avi'
 
 
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
-
-
 @app.route("/")
 def index():
+    # Reset uploads folder
+    shutil.rmtree('uploads', ignore_errors=True)
+    os.makedirs(app.config['UPLOAD_FOLDER'])
+    # Reset runs folder
     shutil.rmtree('runs', ignore_errors=True)
+
     return render_template('index.html')
 
 

@@ -85,6 +85,11 @@ input[type="submit"]{
         animation: color 14s ease-in-out infinite;
 }
 
+button > a {
+        text-decoration: none;
+        color: white
+}
+
 .container img, video {
         max-width: 90%;
         max-height: 90vh;
