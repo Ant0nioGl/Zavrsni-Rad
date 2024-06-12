@@ -16,6 +16,7 @@ def check_if_allowed(filename):
 
 def predict_image(file):
     model = YOLO('yolov8n.pt')
+    # model = YOLO("../main/best.pt")
     # Save the file temporarily
     temp_filename = os.path.join(app.config['UPLOAD_FOLDER'], 'temp.jpg')
     with open(temp_filename, 'wb') as temp_file:
