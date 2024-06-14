@@ -17,13 +17,13 @@ def check_if_allowed(filename):
 def predict_image(file):
     model = YOLO('yolov8n.pt')
     # model = YOLO("../main/best.pt")
-    # Save the file temporarily
+
     temp_filename = os.path.join(app.config['UPLOAD_FOLDER'], 'temp.jpg')
     with open(temp_filename, 'wb') as temp_file:
         temp_file.write(file)
-    # Predict from the saved file
+
     results = model.predict(source=temp_filename, conf=0.5, save=True, classes=[2, 3, 5, 7])
-    # Delete the temporary file after prediction
+
     os.remove(temp_filename)
     output_file = os.path.join(app.config['UPLOAD_FOLDER'], 'result.jpg')
     results[0].save(output_file)
@@ -33,24 +33,19 @@ def predict_image(file):
 def predict_video(file):
     model = YOLO('yolov8n.pt')
 
-    # Save the file temporarily
     temp_video_path = os.path.join(app.config['UPLOAD_FOLDER'], 'temp.mp4')
     with open(temp_video_path, 'wb') as temp_file:
         temp_file.write(file)
 
-    # Predict from the saved video file
     results = model.predict(source=temp_video_path, conf=0.5, save=True, classes=[2, 3, 5, 7])
 
-    # Delete the temporary file after prediction
     os.remove(temp_video_path)
-
-    # Move the predicted video to the UPLOAD_FOLDER
     predicted_video_path = os.path.join('runs', 'detect', 'predict', 'temp.avi')
     final_output_path = os.path.join(app.config['UPLOAD_FOLDER'], 'result.avi')
     os.rename(predicted_video_path, final_output_path)
-
     return 'result.avi'
 
+# https://docs.ultralytics.com/guides/object-counting/#what-is-object-counting
 def count_vehicles(file):
     model = YOLO('yolov8n.pt')
     cap = cv2.VideoCapture(file)
@@ -94,10 +89,9 @@ def count_vehicles(file):
 
 @app.route("/")
 def index():
-    # Reset uploads folder
     shutil.rmtree('uploads', ignore_errors=True)
     os.makedirs(app.config['UPLOAD_FOLDER'])
-    # Reset runs folder
+
     shutil.rmtree('runs', ignore_errors=True)
 
     return render_template('index.html')
@@ -118,7 +112,7 @@ def upload_file():
         elif extension in {'mp4', 'mov', 'avi', 'webm'}:
             prediction = predict_video(file_content)
         else:
-            return "Unsupported file type."
+            return "File type not supported."
         return redirect(url_for('display_file', filename=prediction))
     else:
         return "Please try again."
@@ -139,7 +133,7 @@ def upload_file_count():
                 temp_file.write(file_content)
             prediction = count_vehicles(temp_video_path)
         else:
-            return "Unsupported file type."
+            return "File type not supported."
         return redirect(url_for('display_file', filename=prediction))
     else:
         return "Please try again."
@@ -156,7 +150,6 @@ def uploaded_file(filename):
 
 @app.route('/download-video')
 def download_video():
-    # Make sure 'result.mp4' is placed in the 'static' directory
     return send_from_directory('uploads', 'result.avi', as_attachment=True)
 
 
