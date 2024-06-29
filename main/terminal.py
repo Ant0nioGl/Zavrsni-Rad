@@ -87,11 +87,11 @@ def count_vehicles(model, source):
 
 
 def main():
-    # model = YOLO('yolov8n.pt')
-    model = YOLO("../main/best.pt")
+    model = YOLO('yolov8n.pt')
+    # model = YOLO("../main/best.pt")
 
     mode = input("Enter the mode of video you want to display (track, speed, count): ")
-    source = "../data/videos/vehicle-counting.mp4"
+    source = "../data/motor.jpg"
 
     if mode == "track":
         track(model, source)

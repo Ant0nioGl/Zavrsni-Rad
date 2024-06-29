@@ -1,0 +1,48 @@
+Slajd 1
+Dobar dan. Tema mojeg završnog rada bila je sustav za detekciju vozila u video snimkama prometnica. Danas ću vam predstaviti izvedbu sustava i rezultate.
+
+Slajd 2
+U okviru završnog rada trebalo je proučiti neke koncepte računalnog vida kao što su detekcija objekata i klasifikacija. U kontekstu rada, treba napraviti sustav koji na video snimci uokviri vozilo i nacrta okvir (na engleskom bounding box). Zatim ga klasificira, dakle saznajemo je li se radi o automobilu, kamionu, motoru itd. Dakle, cilj je napraviti sustav koji može obraditi sliku ili video na način kao što je prikazano na slikama.
+
+Slajd 3
+Za izvedbu sustava koristio sam YOLOv8 model od tvrtke ultralytics. To je jedan od najnaprednijih modela koji rješava različite probleme računalnog vida kao što su detekcija i praćenje objekata, klasifikacija, segmentacija itd. YOLOv8 model treniran je na COCO skupu podataka (što znači Common objects in context). Skup podataka se sastoji od preko dvjesto tisuća različitih slika iz realističnih situacija i neke od klasa koje nudi su interesantni za naš sustav, a to su automobil, kamion, motor i autobus.
+
+Slajd 4
+U radu sam koristio unaprijed trenirani YOLOv8 model koji može već prepoznati prethodno rečene klase. Osim toga, istrenirao sam i novi model na skupu podataka sa stranice Kaggle, što je popularna platforma koja nudi puno javno dostupnih skupova podataka. Skup podataka se sastoji od oko 1250 slika i podržava iste klase kao i unaprijed trenirani model, ali dodatno prepoznaje i vozilo hitne pomoći. Ako nećemo sami anotirati slike za učenje i provjeru modela, trebamo imati oznake u adekvatnom formatu za YOLOv8 model, što se nalazi u ovome skupu podataka. 
+
+Slajd 5
+Treniranje modela izvršava se na platformi Google Colab korištenjem prethodno opisanog skupa podataka kroz 100 epoha. Google Colab nudi besplatni GPU koji je izvrstan za različite probleme vezane uz računalni vid.
+
+Slajd 6
+U nastavku prezentacije se nalaze rezultati treniranja modela i usporedba s unaprijed treniranim modelom.
+
+Slajd 7
+Sada ću iznijeti rezultate treniranja modela. Prvo treba napomenuti da je skup podataka podijeljen u tri dijela, a to su skup za učenje, provjeru i testiranje. Zatim treba definirati što su box loss i classification loss. Box loss je greška poklapanja pravokutnika odziva dobivenog detektorom s referentnim oznakama, a classification loss je greška prilikom klasifikacije objekta. Vidimo kako učenje ide glatko, odnosno obadvije pogreške se postepeno smanjuju.
+
+Slajd 8
+Na ovome slajdu nalaze se iste metrike, ali za skup podataka za provjeru (lijevo) i testiranje (desno). Također vidimo da učenje ide u dobrome smjeru u prvih 100 epoha, odnosno model nije došao do prenaučenosti. -Ispričati što je prenaučenost-
+
+Slajd 9
+Zatim definirajmo preciznost i odziv. Preciznost je postotak stvarnih pozitivno klasificiranih primjera u skupu svih pozitivno klasificiranih primjera. Odziv je postotak stvarnih pozitivno klasificiranih primjera u skupu svih pozitivnih primjera. Na grafu vidimo da obadvije metrike postepeno rastu što je dobar znak prilikom treniranja modela.
+
+Slajd 10
+F1 vrijednost je metrika koja uzima u obzir odziv i preciznost te nam govori o njihovom balansu. Računa se kao harmonijska sredina između odziva i preciznosti, formula je prikazana na slajdu. F1 krivulja predstavlja F1 vrijednost (y-os) na različitim pragovima pouzdanosti (x-os) i iz grafa možemo saznati ponašanje za svaku klasu za model kojeg treniramo. Cilj kojem trebamo težiti prilikom treniranja modela je imati sve F1 vrijednosti što bliže 1 jer bi to značilo da model radi savršene predikcije, ali to je naravno u praksi teško izvedivo. Vidimo kako je krivulja najbolja za klasu vozila hitne pomoći, a najgora za klasu kamiona. Najbolja F1 krivulja gledana za cijeli model je na pragu pouzdanosti 0.304 i tada F1 vrijednost iznosi 0.59, što nije baš najbolji rezultat budući da je prag pouzdanosti poprilično malen.
+
+Slajd 11
+Za definiranje iduće važne metrike, najprije trebamo definirati što su to srednja prosječna preciznost i presjek preko unije. Srednja prosječna preciznost računa se kao prosjek svih prosječnih preciznosti za svaku klasu kao što je prikazano formulom. 
+
+Slajd 12
+Presjek preko unije (eng. Intersection over Union) računa se kao omjer između površine u kojoj se presijecaju pravokutnik odziva dobivenog detektorom i referentni pravokutnik te površine koja predstavlja uniju tih dviju površina. -Objasniti sliku-
+
+Slajd 13
+Sada možemo definirati mAP50 i mAP50-95. mAP50 je srednja prosječna vrijednost koja se računa s IoU vrijednosti jednakoj 0.5 i to je metrika za provjeru točnosti modela na „laganim“ detekcijama. mAP50-95 je srednja prosječna vrijednosti koja se računa s IoU vrijednosti između 0.5 i 0.95 te nam daje procjenu točnosti modela  na raznovrsnim uzorcima, uključujući i „teže“ detekcije. Vidimo kako se obje metrike povećavaju, što je dobar znak, međutim i dalje nije dovoljno precizno.
+
+Slajd 14
+Jedna od najpopularnijih metoda za evaluaciju modela u području strojnog učenja naziva se matrica zabune (eng. confusion matrix). Matrica zabune koristi se za vizualizaciju kvalitete predikcija pojedinih klasa, odnosno redovi u matrici zabune predstavljaju stvarnu klasu koja je predstavljena slikom, a stupci predstavljaju klasu koju je model identificirao. S obzirom na tu tvrdnju, pod pretpostavkom da se sve klase poredaju istim redoslijedom po redovima i stupcima, možemo uočiti kako bi idealna matrica zabune bila dijagonalna matrica. U ovom slučaju, možemo uočiti kako se pojedine klase poprilično dobro prepoznaju, ali problem se javlja u tome što se puno primjeraka nalaze u posljednjem retku kojeg čine lažne detekcije (FP) i u posljednjem stupcu kojeg čine propuštene detekcije (FN).
+
+Slajd 15
+Sada ću pokazati kako modeli rade na stvarnim primjerima.
+
+Slajd 16
+
+
