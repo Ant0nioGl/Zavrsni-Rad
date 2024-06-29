@@ -44,5 +44,44 @@ Slajd 15
 Sada ću pokazati kako modeli rade na stvarnim primjerima.
 
 Slajd 16
+-objasniti slike-
 
+Slajd 17
+Sada ću pokazati kako radi detekcija i praćenje vozila na video snimci u nešto lošijim uvjetima, odnosno kada je kiša.
+
+Slajd 18
+-objasniti video-
+
+Slajd 19
+-objasniti video-
+
+Slajd 20
+Sada ćemo vidjeti brojanje vozila na video snimci.
+
+Slajd 21
+-objasniti video-
+
+Slajd 22
+-objasniti video-
+
+Slajd 23
+U okviru rada sam napravio jednostavnu web aplikaciju za jednostavniji pristup sustavu za detekciju vozila. Za klijentsku stranu sam koristio klasični HTML, CSS i JavaScript, a na poslužiteljskoj strani Flask, što je radni okvir u Pythonu za izradu Web aplikacija.
+
+Slajd 24
+-objasniti sliku-
+
+Slajd 25
+-objasniti sliku-
+
+Slajd 26
+-objasniti sliku-
+
+Slajd 27
+-objasniti sliku-
+
+Slajd 28
+-objasniti sliku-
+
+Slajd 29
+Hvala Vam na pažnji!
 
